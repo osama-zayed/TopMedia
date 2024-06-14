@@ -17,11 +17,11 @@ class Controller extends BaseController
             'data' => $data
         ]);
     }
-    public static function responseError($message = 'حدث خطاء ما')
+    public static function responseError($message = 'حدث خطاء ما', $statusCode = 400)
     {
         return response()->json([
             'status' => 'false',
             'message' => $message,
-        ], 400);
+        ], $statusCode);
     }
 }

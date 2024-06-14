@@ -15,15 +15,19 @@ class ProductController extends Controller
                 'product_name',
                 'product_description',
                 'categorie_id',
-                'product_status',
                 'product_price',
                 'image',
                 'discount_percentage',
-            )->get();
+            )->where('product_status', 1)->get();
             $ProductData = $Product->map(function ($Product) {
                 return [
                     'id' => $Product->id,
                     'name' => $Product->product_name,
+                    'categorie_name' => $Product->Category->categorie_name,
+                    'product_description' => $Product->product_description,
+                    'old_product_price' => $Product->product_price,
+                    'discount_percentage' => $Product->discount_percentage,
+                    'new_product_price' => $Product->product_price - ($Product->product_price * ($Product->discount_percentage / 100)),
                     'image' => url('storage/', $Product->image[0]),
                 ];
             });
