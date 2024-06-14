@@ -17,3 +17,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::prefix('auth')->group(function () {
+    Route::post('login', "AuthController@login");
+});
+Route::prefix('Category')->group(function () {
+    Route::get('showAll', "CategoryController@showAll");
+});
+Route::prefix('Product')->group(function () {
+    Route::get('showAll', "ProductController@showAll");
+});

@@ -16,21 +16,32 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
-    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $modelLabel = 'صنف';
     protected static ?string $pluralLabel = 'الاصناف';
-
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('categorie_name')
-                    ->required()
-                    ->label('اسم الصنف')
-                    ->maxLength(255),
-            ]);
+            ->schema(self::formCategory());
+    }
+    public static function formCategory()
+    {
+        return [
+            Forms\Components\TextInput::make('categorie_name')
+                ->label('اسم الصنف')
+                ->required()
+                ->maxLength(255)
+                ->columnSpanFull(),
+            Forms\Components\FileUpload::make('image')
+                ->label('صورة الصنف')
+                ->image()
+                ->required()
+                ->directory('Category')
+                ->columnSpanFull(),
+        ];
     }
 
     public static function table(Table $table): Table
@@ -40,17 +51,18 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('categorie_name')
                     ->label('اسم الصنف')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->square()
+                    ->extraImgAttributes(['loading' => 'lazy'])
+                    ->label('صورة الصنف'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
-                    ->label('وقت الاضافة')
                     ->toggleable(isToggledHiddenByDefault: true),
-                    Tables\Columns\TextColumn::make('updated_at')
+                Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
-                    ->label('وقت التعديل')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-
             ])
             ->filters([
                 //

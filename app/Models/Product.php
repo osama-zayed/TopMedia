@@ -11,21 +11,19 @@ class Product extends Model
     protected $table = 'products';
     protected $fillable = [
         'id',
-        'product_code',
         'product_name',
         'product_description',
         'categorie_id',
         'product_status',
-        'total_price',
+        'product_price',
+        'image',
+        'discount_percentage',
+    ];
+    protected $casts = [
+        'image' =>"array"
     ];
     public function Category()
     {
         return $this->belongsTo(Category::class, 'categorie_id');
-    }
-    public function units()
-    {
-        return $this->belongsToMany(Unit::class, 'product_units')
-        ->withPivot(['product_price'])
-            ->withTimestamps();
     }
 }

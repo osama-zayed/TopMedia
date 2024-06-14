@@ -32,59 +32,45 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('product_name')
-                    ->required()
-                    ->label('اسم المنتج')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('product_code')
-                    ->required()
-                    ->label('كود المنتج')
-                    ->maxLength(255),
-                Forms\Components\Select::make('categorie_id')
-                    ->relationship('Category', titleAttribute: 'categorie_name')
-                    ->searchable()
-                    ->preload()
-                    ->columnSpan(2)
-                    ->label('الصنف')
-                    ->required()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('categorie_name')
+                Forms\Components\Section::make([
+                    Forms\Components\TextInput::make('product_name')
                         ->required()
-                        ->label('اسم الصنف')
+                        ->label('اسم المنتج')
                         ->maxLength(255),
-                    ]),
-                Forms\Components\Textarea::make('product_description')
-                    ->required()
-                    ->maxLength(65535)
-                    ->label('وصف المنتج')
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('product_status')
-                    ->label('حالة المنتج')
-                    ->default(true)
-                    ->columnSpan(2)
-                    ->required(),
-                Forms\Components\Repeater::make('product_unit_prices')
-                    ->schema([
-                        Forms\Components\Select::make('unit_id')
-                            ->relationship('units', 'unit_name')
-                            ->label('الوحدة')
-                            ->searchable()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('unit_name')
-                                ->required()
-                                ->label('وحده القياس')
-                                ->maxLength(255),
-                            ])
-                            ->preload()
-                            ->required(),
-                        Forms\Components\TextInput::make('product_price')
-                            ->label('السعر')
-                            ->required()
-                            ->numeric(),
-                    ])
-                    ->columnSpan(2)
-                    ->columns(2)
-                    ->label('أسعار الوحدات')
+                    Forms\Components\Select::make('categorie_id')
+                        ->relationship('Category', titleAttribute: 'categorie_name')
+                        ->searchable()
+                        ->preload()
+                        ->label('الصنف')
+                        ->required()
+                        ->createOptionForm(CategoryResource::formCategory()),
+                    Forms\Components\TextInput::make('product_price')
+                        ->required()
+                        ->numeric()
+                        ->label('سعر المنتج'),
+                    Forms\Components\TextInput::make('discount_percentage')
+                        ->required()
+                        ->numeric()
+                        ->label('نسبة التخفيض'),
+                    // Forms\Components\MarkdownEditor::make('product_description')
+                    Forms\Components\Textarea::make('product_description')
+                        ->required()
+                        ->maxLength(65535)
+                        ->label('وصف المنتج')
+                        ->columnSpanFull(),
+                    Forms\Components\Toggle::make('product_status')
+                        ->label('حالة المنتج')
+                        ->default(true)
+                        ->required(),
+                ])->columns(2),
+                Forms\Components\Section::make([
+                    Forms\Components\FileUpload::make('image')
+                        ->label('صور للمنتج')
+                        ->multiple()
+                        // ->image()
+                        ->required()
+                        ->directory('Product')
+                ]),
             ])->columns(2);
     }
 
@@ -99,14 +85,22 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('product_name')
                     ->label('اسم المنتج')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('product_code')
-                    ->label('كود المنتج')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('Category.categorie_name')
                     ->label('الصنف'),
+                Tables\Columns\TextColumn::make('product_price')
+                    ->sortable()
+                    ->label('سعر المنتج'),
+                Tables\Columns\TextColumn::make('discount_percentage')
+                    ->sortable()
+                    ->label('نسبة التخفيض'),
                 Tables\Columns\IconColumn::make('product_status')
                     ->label('حالة المنتج')
                     ->boolean(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->circular()
+                    ->stacked()
+                    ->limit(3)
+                    ->limitedRemainingText(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -139,9 +133,7 @@ class ProductResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            UnitsRelationManager::class
-        ];
+        return [];
     }
 
     public static function getPages(): array
