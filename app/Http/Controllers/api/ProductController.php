@@ -85,7 +85,8 @@ class ProductController extends Controller
     {
         return array_map(function ($product) {
             $images = is_array($product->image) ? $product->image : [$product->image];
-            $firstImage = url('storage/', $images[0]);
+            // $firstImage = url('storage/', $images[0]);
+            $firstImage = $images[0];
 
             return [
                 'id' => $product->id,
