@@ -4,36 +4,97 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public static function showAll()
+    public static function showAll(Request $request)
     {
         try {
-            $Product = Product::select(
-                'id',
-                'product_name',
-                'product_description',
-                'categorie_id',
-                'product_price',
-                'image',
-                'discount_percentage',
-            )->where('product_status', 1)->get();
-            $ProductData = $Product->map(function ($Product) {
-                return [
-                    'id' => $Product->id,
-                    'name' => $Product->product_name,
-                    'categorie_name' => $Product->Category->categorie_name,
-                    'product_description' => $Product->product_description,
-                    'old_product_price' => $Product->product_price,
-                    'discount_percentage' => $Product->discount_percentage,
-                    'new_product_price' => $Product->product_price - ($Product->product_price * ($Product->discount_percentage / 100)),
-                    'image' => url('storage/', $Product->image[0]),
-                ];
-            });
-            return self::responseSuccess($ProductData);
+            return self::responseSuccess(self::getProductsPaginated($request));
         } catch (\Throwable $th) {
             return self::responseError();
         }
+    }
+    public static function showById(Request $request)
+    {
+        try {
+            return self::responseSuccess(self::getProductById($request->get('id', null)));
+        } catch (\Throwable $th) {
+            return self::responseError();
+        }
+    }
+    public static function getProductsPaginated($request)
+    {
+        $perPage = $request->get('per_page');
+        $page = $request->get('current_page');
+        $categorie_id = $request->get('categorie_id');
+
+        $query = Product::select(
+            'id',
+            'product_name',
+            'product_price',
+            'image',
+            'discount_percentage'
+        )
+            ->where('product_status', 1);
+
+        if ($categorie_id) {
+            $query->where('categorie_id', $categorie_id);
+        }
+
+        $products = $query->paginate($perPage, "", "", $page);
+
+        return self::formatPaginatedResponse($products, self::formatProductDataForDisplay($products->items()));
+    }
+    public static function getProductById($id)
+    {
+
+        $product = Product::select(
+            'id',
+            'product_name',
+            'product_description',
+            'categorie_id',
+            'product_status',
+            'product_price',
+            'image',
+            'discount_percentage',
+        )
+            ->where('product_status', 1)
+            ->where('id', $id)
+            ->first();
+
+        return self::formatProductData($product);
+    }
+    private static function formatProductData($product)
+    {
+        return [
+            'id' => $product->id,
+            'product_name' => $product->product_name,
+            'categorie_name' => $product->Category->categorie_name,
+            'product_description' => $product->product_description,
+            'old_product_price' => number_format($product->product_price, 2),
+            'discount_percentage' => $product->discount_percentage,
+            'new_product_price' => number_format($product->product_price - ($product->product_price * ($product->discount_percentage / 100)), 2),
+            'image' => is_array($product->image) ? array_map(function ($image) {
+                return url('storage/', $image);
+            }, $product->image) : [url('storage/', $product->image)],
+        ];
+    }
+    private static function formatProductDataForDisplay($products)
+    {
+        return array_map(function ($product) {
+            $images = is_array($product->image) ? $product->image : [$product->image];
+            $firstImage = url('storage/', $images[0]);
+
+            return [
+                'id' => $product->id,
+                'product_name' => $product->product_name,
+                'product_price' => number_format($product->product_price, 2),
+                'image' => $firstImage,
+                'discount_percentage' => $product->discount_percentage,
+                'new_product_price' => number_format($product->product_price - ($product->product_price * ($product->discount_percentage / 100)), 2),
+            ];
+        }, $products);
     }
 }

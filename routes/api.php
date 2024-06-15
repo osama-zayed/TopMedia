@@ -25,4 +25,8 @@ Route::prefix('Category')->group(function () {
 });
 Route::prefix('Product')->group(function () {
     Route::get('showAll', "ProductController@showAll");
+    Route::post('showById', "ProductController@showById");
+});
+Route::prefix('Banner')->group(function () {
+    Route::get('showAll', "BannerController@showAll");
 });

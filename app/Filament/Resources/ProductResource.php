@@ -47,10 +47,13 @@ class ProductResource extends Resource
                     Forms\Components\TextInput::make('product_price')
                         ->required()
                         ->numeric()
+                        ->minValue(0)
                         ->label('سعر المنتج'),
                     Forms\Components\TextInput::make('discount_percentage')
                         ->required()
                         ->numeric()
+                        ->maxValue(70)
+                        ->minValue(0)
                         ->label('نسبة التخفيض'),
                     // Forms\Components\MarkdownEditor::make('product_description')
                     Forms\Components\Textarea::make('product_description')
@@ -96,9 +99,10 @@ class ProductResource extends Resource
                 Tables\Columns\IconColumn::make('product_status')
                     ->label('حالة المنتج')
                     ->boolean(),
-                Tables\Columns\ImageColumn::make('image')
+                    Tables\Columns\ImageColumn::make('image')
                     ->circular()
                     ->stacked()
+                    ->label('صور المنتج')
                     ->limit(3)
                     ->limitedRemainingText(),
                 Tables\Columns\TextColumn::make('created_at')

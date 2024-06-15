@@ -23,4 +23,5 @@ class CategoryController extends Controller
             return self::responseError();
         }
     }
+   
 }

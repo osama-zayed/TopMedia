@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CategoryResource\Pages;
-use App\Filament\Resources\CategoryResource\RelationManagers;
-use App\Models\Category;
+use App\Filament\Resources\BannerResource\Pages;
+use App\Filament\Resources\BannerResource\RelationManagers;
+use App\Models\Banner;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,48 +13,36 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CategoryResource extends Resource
+class BannerResource extends Resource
 {
-    protected static ?string $model = Category::class;
+    protected static ?string $model = Banner::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
-    protected static ?string $modelLabel = 'صنف';
-    protected static ?string $pluralLabel = 'الاصناف';
+    protected static ?string $modelLabel = 'بنر';
+    protected static ?string $pluralLabel = 'البنرات';
     public static function form(Form $form): Form
     {
         return $form
-            ->schema(self::formCategory());
-    }
-    public static function formCategory()
-    {
-        return [
-            Forms\Components\TextInput::make('categorie_name')
-                ->label('اسم الصنف')
-                ->required()
-                ->maxLength(255)
-                ->columnSpanFull(),
-            Forms\Components\FileUpload::make('image')
-                ->label('صورة الصنف')
-                ->image()
-                ->required()
-                ->directory('Category')
-                ->columnSpanFull(),
-        ];
+            ->schema([
+                    Forms\Components\FileUpload::make('image')
+                    ->label('صورة البنر')
+                    ->image()
+                    ->required()
+                    ->directory('Banner')
+                    ->columnSpanFull(),
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('categorie_name')
-                    ->label('اسم الصنف')
-                    ->searchable(),
                 Tables\Columns\ImageColumn::make('image')
                     ->square()
                     ->extraImgAttributes(['loading' => 'lazy'])
-                    ->label('صورة الصنف'),
+                    ->label('صورة البنر'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -82,21 +70,21 @@ class CategoryResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-
+    
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-
+    
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'view' => Pages\ViewCategory::route('/{record}'),
-            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'index' => Pages\ListBanners::route('/'),
+            'create' => Pages\CreateBanner::route('/create'),
+            'view' => Pages\ViewBanner::route('/{record}'),
+            'edit' => Pages\EditBanner::route('/{record}/edit'),
         ];
-    }
+    }    
 }
