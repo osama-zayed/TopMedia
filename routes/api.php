@@ -19,7 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::prefix('auth')->group(function () {
     Route::post('login', "AuthController@login");
-    Route::get('me', "AuthController@me")->middleware('auth:api');
+    Route::post('register', "AuthController@register");
+    Route::post('logout', "AuthController@logout")->middleware('auth:sanctum');
+    Route::get('me', "AuthController@me")->middleware('auth:sanctum');
+    Route::put('editUser', "AuthController@editUser")->middleware('auth:sanctum');
 });
 Route::prefix('Category')->group(function () {
     Route::get('showAll', "CategoryController@showAll");

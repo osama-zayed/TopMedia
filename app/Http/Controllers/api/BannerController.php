@@ -17,7 +17,7 @@ class BannerController extends Controller
             $BannerData = $Banner->map(function ($Banner) {
                 return [
                     'id' => $Banner->id,
-                    'image' => url('storage/', $Banner->image),
+                    'image' => url('storage', $Banner->image),
                 ];
             });
             return self::responseSuccess($BannerData);

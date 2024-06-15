@@ -77,8 +77,8 @@ class ProductController extends Controller
             'discount_percentage' => $product->discount_percentage,
             'new_product_price' => number_format($product->product_price - ($product->product_price * ($product->discount_percentage / 100)), 2),
             'image' => is_array($product->image) ? array_map(function ($image) {
-                return url('storage/', $image);
-            }, $product->image) : [url('storage/', $product->image)],
+                return url('storage', $image);
+            }, $product->image) : [url('storage', $product->image)],
         ];
     }
     private static function formatProductDataForDisplay($products)
@@ -87,7 +87,7 @@ class ProductController extends Controller
             $images = is_array($product->image) ? $product->image : [$product->image];
             // $firstImage = url('storage/', $images[0]);
             // $firstImage = $images[0];
-            $firstImage = str_starts_with($images[0], 'Product/') ? url('storage/', $images[0]) : $images[0];
+            $firstImage = str_starts_with($images[0], 'Product/') ? url('storage', $images[0]) : $images[0];
             return [
                 'id' => $product->id,
                 'product_name' => $product->product_name,

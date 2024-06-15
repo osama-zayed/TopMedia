@@ -15,7 +15,7 @@ class CategoryController extends Controller
                 return [
                     'id' => $Category->id,
                     'name' => $Category->categorie_name,
-                    'image' => url('storage/', $Category->image),
+                    'image' => url('storage', $Category->image),
                 ];
             });
             return self::responseSuccess($CategoryData);
