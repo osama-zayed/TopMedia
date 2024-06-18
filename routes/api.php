@@ -27,6 +27,9 @@ Route::prefix('auth')->group(function () {
 Route::prefix('Category')->group(function () {
     Route::get('showAll', "CategoryController@showAll");
 });
+Route::prefix('Setting')->group(function () {
+    Route::get('showAll', "SettingController@showAll");
+});
 Route::prefix('Product')->group(function () {
     Route::get('showAll', "ProductController@showAll");
     Route::post('showById', "ProductController@showById");

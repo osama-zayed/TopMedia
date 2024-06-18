@@ -21,6 +21,10 @@ use function Laravel\Prompts\select;
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
+    protected static string | array $routeMiddleware = [
+        'auth:web',
+        'Permission:view products',
+    ];
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 2;
@@ -99,7 +103,7 @@ class ProductResource extends Resource
                 Tables\Columns\IconColumn::make('product_status')
                     ->label('حالة المنتج')
                     ->boolean(),
-                    Tables\Columns\ImageColumn::make('image')
+                Tables\Columns\ImageColumn::make('image')
                     ->circular()
                     ->stacked()
                     ->label('صور المنتج')

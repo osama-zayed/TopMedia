@@ -9,6 +9,7 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    
     public function login(Request $request)
     {
         // Validate the login request
@@ -82,7 +83,7 @@ class AuthController extends Controller
         ]);
 
         // Get the authenticated user
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
 
         // Update the user's information
         $user->update([
