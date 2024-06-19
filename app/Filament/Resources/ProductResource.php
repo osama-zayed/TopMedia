@@ -41,8 +41,8 @@ class ProductResource extends Resource
                         ->required()
                         ->label('اسم المنتج')
                         ->maxLength(255),
-                    Forms\Components\Select::make('categorie_id')
-                        ->relationship('Category', titleAttribute: 'categorie_name')
+                    Forms\Components\Select::make('category_id')
+                        ->relationship('Category', titleAttribute: 'category_name')
                         ->searchable()
                         ->preload()
                         ->label('الصنف')
@@ -92,7 +92,7 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('product_name')
                     ->label('اسم المنتج')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('Category.categorie_name')
+                Tables\Columns\TextColumn::make('Category.category_name')
                     ->label('الصنف'),
                 Tables\Columns\TextColumn::make('product_price')
                     ->sortable()
@@ -121,9 +121,9 @@ class ProductResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('categorie_id')
+                SelectFilter::make('category_id')
                     ->label('الصنف')
-                    ->relationship('Category', 'categorie_name')
+                    ->relationship('Category', 'category_name')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

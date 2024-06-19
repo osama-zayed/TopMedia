@@ -21,7 +21,7 @@ class ProductFactory extends Factory
         return [
             'product_name' => $this->faker->unique()->sentence(3),
             'product_description' => $this->faker->realText(200),
-            'categorie_id' => Category::inRandomOrder()->first(),
+            'category_id' => Category::inRandomOrder()->first(),
             'product_price' => $this->faker->numberBetween(1000, 20000),
             'discount_percentage' => $this->faker->numberBetween(1, 70),
             'image' => [

@@ -14,11 +14,11 @@ class CategoryController extends Controller
     public static function showAll()
     {
         try {
-            $Category = Category::select('id', 'categorie_name', 'image')->get();
+            $Category = Category::select('id', 'category_name', 'image')->get();
             $CategoryData = $Category->map(function ($Category) {
                 return [
                     'id' => $Category->id,
-                    'name' => $Category->categorie_name,
+                    'name' => $Category->category_name,
                     'image' => str_starts_with($Category->image, 'Category/') ? url('storage', $Category->image) : $Category->image,
                 ];
             });

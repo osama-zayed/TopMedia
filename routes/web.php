@@ -4,7 +4,7 @@
 
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
-
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,14 +16,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class,'index']);
-Route::resource('home', HomeController::class);
-Route::get('/electronic', function () {
-    return view('page.electronic');
-})->name('electronic');
-Route::get('/jewellery', function () {
-    return view('page.jewellery');
-})->name('jewellery');
-Route::get('/fashion', function () {
-    return view('page.fashion');
-})->name('fashion');
+
+
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => ['localize']
+    ],
+    function () {
+
+        Route::get('/', [HomeController::class, 'index']);
+        Route::resource('home', HomeController::class);
+        Route::resource('Category', CategoryController::class);
+        
+    }
+);

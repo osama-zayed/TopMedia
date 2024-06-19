@@ -28,7 +28,7 @@ class ProductController extends Controller
     {
         $perPage = $request->get('per_page');
         $page = $request->get('current_page');
-        $categorie_id = $request->get('categorie_id');
+        $category_id = $request->get('category_id');
 
         $query = Product::select(
             'id',
@@ -39,8 +39,8 @@ class ProductController extends Controller
         )
             ->where('product_status', 1);
 
-        if ($categorie_id) {
-            $query->where('categorie_id', $categorie_id);
+        if ($category_id) {
+            $query->where('category_id', $category_id);
         }
 
         $products = $query->paginate($perPage, "", "", $page);
@@ -54,7 +54,7 @@ class ProductController extends Controller
             'id',
             'product_name',
             'product_description',
-            'categorie_id',
+            'category_id',
             'product_status',
             'product_price',
             'image',

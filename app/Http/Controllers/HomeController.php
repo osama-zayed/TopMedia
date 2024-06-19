@@ -21,22 +21,22 @@ class HomeController extends Controller
         'product_price',
         'image',
         'discount_percentage',
-        'categorie_id'
+        'category_id'
     )
     ->where('product_status', 1)
-    ->with('Category:id,categorie_name')
+    ->with('Category:id,category_name')
     // ->orderByDesc('id')
     ->paginate($perPage, ['*'], 'page', $page);
 
     $groupedProducts = $products->groupBy(function ($product) {
-        return $product->Category->categorie_name;
+        return $product->Category->category_name;
     });
 
     $groupedProducts = $groupedProducts->map(function ($products) {
         return $products->take(3);
     });
 // dd($groupedProducts);
-    return view('page.index', [
+    return view('page.home', [
         'groupedProducts' => $groupedProducts
     ]);
 }

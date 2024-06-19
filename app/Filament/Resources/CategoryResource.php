@@ -30,7 +30,7 @@ class CategoryResource extends Resource
     public static function formCategory()
     {
         return [
-            Forms\Components\TextInput::make('categorie_name')
+            Forms\Components\TextInput::make('category_name')
                 ->label('اسم الصنف')
                 ->required()
                 ->maxLength(255)
@@ -48,7 +48,7 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('categorie_name')
+                Tables\Columns\TextColumn::make('category_name')
                     ->label('اسم الصنف')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image')
