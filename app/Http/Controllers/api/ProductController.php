@@ -92,7 +92,7 @@ class ProductController extends Controller
             'new_product_price' => number_format($product->product_price - ($product->product_price * ($product->discount_percentage / 100)), 2),
             'is_favorite' => $product->is_favorite,
             'image' => is_array($product->image) ? array_map(function ($image) {
-                return url('storage', $image);
+                return str_starts_with($image, 'Product/') ? url('storage', $image) : $image;
             }, $product->image) : [url('storage', $product->image)],
         ];
     }
@@ -100,9 +100,9 @@ class ProductController extends Controller
     {
         return array_map(function ($product) {
             $images = is_array($product->image) ? $product->image : [$product->image];
+            $firstImage = str_starts_with($images[0], 'Product/') ? url('storage', $images[0]) : $images[0];
             // $firstImage = url('storage/', $images[0]);
             // $firstImage = $images[0];
-            $firstImage = str_starts_with($images[0], 'Product/') ? url('storage', $images[0]) : $images[0];
             return [
                 'id' => $product->id,
                 'product_name' => $product->product_name,
