@@ -686,18 +686,18 @@ a:hover {
     min-height: 293px;
 }
 
-#electronic_main_slider a.carousel-control-next {
+.product_main_slider a.carousel-control-next {
     right: 615px;
     top: 105%;
 }
 
-#electronic_main_slider a.carousel-control-prev {
+.product_main_slider a.carousel-control-prev {
     left: 615px;
     top: 105%;
 }
 
-#electronic_main_slider .carousel-control-next,
-#electronic_main_slider .carousel-control-prev {
+.product_main_slider .carousel-control-next,
+.product_main_slider .carousel-control-prev {
     width: 55px;
     height: 55px;
     background-color: #30302e;
@@ -706,10 +706,10 @@ a:hover {
     color: #ffffff;
 }
 
-#electronic_main_slider .carousel-control-next:focus,
-#electronic_main_slider .carousel-control-next:hover,
-#electronic_main_slider .carousel-control-prev:focus,
-#electronic_main_slider .carousel-control-prev:hover {
+.product_main_slider .carousel-control-next:focus,
+.product_main_slider .carousel-control-next:hover,
+.product_main_slider .carousel-control-prev:focus,
+.product_main_slider .carousel-control-prev:hover {
     color: #fff;
     background-color: #f26522;
 }
