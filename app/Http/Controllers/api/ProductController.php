@@ -85,7 +85,7 @@ class ProductController extends Controller
         return [
             'id' => $product->id,
             'product_name' => $product->product_name,
-            'categorie_name' => $product->Category->categorie_name,
+            'categorie_name' => $product->Category->category_name,
             'product_description' => $product->product_description,
             'old_product_price' => number_format($product->product_price, 2),
             'discount_percentage' => $product->discount_percentage,
