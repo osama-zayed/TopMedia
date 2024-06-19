@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Favorit;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FavoritController extends Controller
 {
@@ -21,15 +22,24 @@ class FavoritController extends Controller
     {
         $perPage = $request->get('per_page');
         $page = $request->get('current_page');
-        $favorites = Favorit::where('user_id', auth('sanctum')->user()->id)
+        $user = auth('sanctum')->user();
+    
+        $favorites = Favorit::where('user_id', $user->id)
             ->where('status', 1)
-
             ->pluck('product_id');
-
-        $products = Product::whereIn('id', $favorites)
-            ->orderByDesc('id')
-            ->paginate($perPage, ['*'], "current_page", $page);
-
+    
+        $products = Product::select(
+            'products.id',
+            'products.product_name',
+            'products.product_price',
+            'products.image',
+            'products.discount_percentage',
+            DB::raw('CASE WHEN EXISTS(SELECT 1 FROM favorits WHERE favorits.product_id = products.id AND favorits.user_id = ' . $user->id . ' AND favorits.status = 1) THEN 1 ELSE 0 END AS is_favorite')
+        )
+        ->whereIn('id', $favorites)
+        ->orderByDesc('id')
+        ->paginate($perPage, ['*'], "current_page", $page);
+    
         return self::responseSuccess(self::formatPaginatedResponse($products, ProductController::formatProductDataForDisplay($products->items())));
     }
 

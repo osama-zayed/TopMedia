@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -13,7 +14,7 @@ class ProductController extends Controller
         try {
             return self::responseSuccess(self::getProductsPaginated($request));
         } catch (\Throwable $th) {
-            return self::responseError();
+            return self::responseError($th);
         }
     }
     public static function showById(Request $request)
@@ -30,26 +31,38 @@ class ProductController extends Controller
         $page = $request->get('current_page');
         $category_id = $request->get('category_id');
 
+        $user = auth('sanctum')->user();
+
         $query = Product::select(
-            'id',
-            'product_name',
-            'product_price',
-            'image',
-            'discount_percentage'
+            'products.id',
+            'products.product_name',
+            'products.product_price',
+            'products.image',
+            'products.discount_percentage',
+            DB::raw('CASE WHEN EXISTS(SELECT 1 FROM favorits WHERE favorits.product_id = products.id AND favorits.user_id = ' . ($user ? $user->id : 'NULL') . ' AND favorits.status = 1) THEN 1 ELSE 0 END AS is_favorite')
         )
-            ->where('product_status', 1);
+            ->leftJoin('favorits', function ($join) use ($user) {
+                if ($user) {
+                    $join->on('products.id', '=', 'favorits.product_id')
+                        ->where('favorits.user_id', '=', $user->id);
+                } else {
+                    $join->on('products.id', '=', 'favorits.product_id')
+                        ->whereNull('favorits.user_id');
+                }
+            })
+            ->where('products.product_status', 1)
+            ->distinct('products.id'); // Add this line to ensure unique product IDs
 
         if ($category_id) {
             $query->where('category_id', $category_id);
         }
 
         $products = $query->paginate($perPage, "", "current_page", $page);
-
         return self::formatPaginatedResponse($products, self::formatProductDataForDisplay($products->items()));
     }
     public static function getProductById($id)
     {
-
+        $user = auth('sanctum')->user();
         $product = Product::select(
             'id',
             'product_name',
@@ -59,9 +72,10 @@ class ProductController extends Controller
             'product_price',
             'image',
             'discount_percentage',
+            DB::raw('CASE WHEN EXISTS(SELECT 1 FROM favorits WHERE favorits.product_id = products.id AND favorits.user_id = ' . ($user ? $user->id : 'NULL') . ' AND favorits.status = 1) THEN 1 ELSE 0 END AS is_favorite')
         )
-            ->where('product_status', 1)
-            ->where('id', $id)
+            ->where('products.id', $id)
+            ->where('products.product_status', 1)
             ->first();
 
         return self::formatProductData($product);
@@ -76,6 +90,7 @@ class ProductController extends Controller
             'old_product_price' => number_format($product->product_price, 2),
             'discount_percentage' => $product->discount_percentage,
             'new_product_price' => number_format($product->product_price - ($product->product_price * ($product->discount_percentage / 100)), 2),
+            'is_favorite' => $product->is_favorite,
             'image' => is_array($product->image) ? array_map(function ($image) {
                 return url('storage', $image);
             }, $product->image) : [url('storage', $product->image)],
@@ -92,9 +107,10 @@ class ProductController extends Controller
                 'id' => $product->id,
                 'product_name' => $product->product_name,
                 'product_price' => number_format($product->product_price, 2),
-                'image' => $firstImage,
+                'is_favorite' => $product->is_favorite,
                 'discount_percentage' => $product->discount_percentage,
                 'new_product_price' => number_format($product->product_price - ($product->product_price * ($product->discount_percentage / 100)), 2),
+                'image' => $firstImage,
             ];
         }, $products);
     }
