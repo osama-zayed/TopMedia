@@ -14,7 +14,7 @@ class CategoryController extends Controller
     public static function showAll()
     {
         try {
-            $Category = Category::select('id', 'category_name', 'image')->get();
+            $Category = Category::select('id', 'category_name', 'image') ->orderByDesc('id')->get();
             $CategoryData = $Category->map(function ($Category) {
                 return [
                     'id' => $Category->id,

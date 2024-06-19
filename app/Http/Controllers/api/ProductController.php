@@ -43,7 +43,7 @@ class ProductController extends Controller
             $query->where('category_id', $category_id);
         }
 
-        $products = $query->paginate($perPage, "", "", $page);
+        $products = $query->paginate($perPage, "", "current_page", $page);
 
         return self::formatPaginatedResponse($products, self::formatProductDataForDisplay($products->items()));
     }
@@ -81,7 +81,7 @@ class ProductController extends Controller
             }, $product->image) : [url('storage', $product->image)],
         ];
     }
-    private static function formatProductDataForDisplay($products)
+    public static function formatProductDataForDisplay($products)
     {
         return array_map(function ($product) {
             $images = is_array($product->image) ? $product->image : [$product->image];

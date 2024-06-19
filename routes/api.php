@@ -37,3 +37,7 @@ Route::prefix('Product')->group(function () {
 Route::prefix('Banner')->group(function () {
     Route::get('showAll', "BannerController@showAll");
 });
+Route::prefix('favorites')->group(function () {
+    Route::get('showAll', "FavoritController@showAll");
+    Route::post('add', "FavoritController@add");
+});
