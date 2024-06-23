@@ -87,9 +87,9 @@ class ProductController extends Controller
             'product_name' => $product->product_name,
             'categorie_name' => $product->Category->category_name,
             'product_description' => $product->product_description,
-            'old_product_price' => number_format($product->product_price, 2),
+            'old_product_price' =>(double)$product->product_price,
             'discount_percentage' => $product->discount_percentage,
-            'new_product_price' => number_format($product->product_price - ($product->product_price * ($product->discount_percentage / 100)), 2),
+            'new_product_price' => $product->product_price - ($product->product_price * ($product->discount_percentage / 100)),
             'is_favorite' => $product->is_favorite,
             'image' => is_array($product->image) ? array_map(function ($image) {
                 return str_starts_with($image, 'Product/') ? url('storage', $image) : $image;
@@ -106,10 +106,10 @@ class ProductController extends Controller
             return [
                 'id' => $product->id,
                 'product_name' => $product->product_name,
-                'product_price' => number_format($product->product_price, 2),
-                'is_favorite' => $product->is_favorite,
+                'product_price' => (double)$product->product_price,
                 'discount_percentage' => $product->discount_percentage,
-                'new_product_price' => number_format($product->product_price - ($product->product_price * ($product->discount_percentage / 100)), 2),
+                'new_product_price' => (double)$product->product_price - ($product->product_price * ($product->discount_percentage / 100)),
+                'is_favorite' => $product->is_favorite,
                 'image' => $firstImage,
             ];
         }, $products);
