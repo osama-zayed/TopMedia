@@ -86,6 +86,7 @@ class DatabaseSeeder extends Seeder
             'key' => 'store_name',
             'value' => 'Top media',
         ]);
+        
         Setting::create([
             'key' => 'description',
             'value' => 'متجر متخصص في بيع الالكترونيات',
